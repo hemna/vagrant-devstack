@@ -1,0 +1,5 @@
+Test whether the configuration stuff is working correctly on 'polishing' branch
+- Integrate fc passthrough into Vagrantfile
+- Make config.yaml optional, so that it works correctly without one.  Requires having a fixed box name/URL
+- Write up wiki page on how to get started
+- Figure out how to make it work with remote horizon. Maybe use bridged networking?

@@ -1,0 +1,7 @@
+config.yaml
+.vagrant
+local.conf
+
+# Ignore any customizations in files/home EXCEPT for .pip
+files/home/*
+!files/home/.pip

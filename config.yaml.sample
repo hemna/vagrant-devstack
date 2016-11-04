@@ -1,0 +1,165 @@
+# Box name
+# ---------
+box: <<BOX NAME>>    ## Change this value!!!
+
+# Hostname
+# ---------
+# Override the hostname to some custom value.
+#
+hostname: trusty-devstack
+
+
+#
+# All of the following values in this file are optional.  Without them,
+# the VM should launch with reasonable defaults.
+#
+
+# Memory
+# ------
+# Specify how much memory the VM will get.  Values less than
+# 4096 (4GB) have been problematic on some blades.
+#
+# memory: 8192
+
+
+# CPUS
+# ----
+# Specify how many CPUs will be allocated to the vm
+#
+# cpus: 2
+#
+
+# HD size
+# -------
+# Override the default size of the root hard drive for the vm
+# Size in Gb
+#
+# hdsize: 1
+
+# Networking
+# ----------
+#
+# Enable bridge network interface
+# enable_bridge_networking: false
+
+# Which interface on the host do you want to bridge to?
+# Note: This is not the interface name you'll get inside the guest.
+# bridge_interface: eth0
+
+# What ip address do you want the bridge interface have?
+# The default is 'dhcp'
+# bridge_ip: dhcp
+
+# Directory Sharing
+# -----------------
+# You can share directories on the host with the VM, which is done with NFS.  This is
+# particularly useful for sharing a particular git repo or code changes with your host
+# and your VMs.  This setting defines which host directories are to be shared, along
+# with the directory name that they will be mounted under on the guest VM.
+#
+# IMPORTANT!:
+#    If you do not have NFS enabled on your host, you will get an error message when launching
+#    your VM:
+#       It appears your machine doesn't support NFS, or there is not an
+#       adapter to enable NFS on this machine for Vagrant. Please verify
+#       that `nfsd` is installed on your machine, and try again. If you're
+#       on Windows, NFS isn't supported. If the problem persists, please
+#       contact Vagrant support.
+#    To fix this, run the following on your host:
+#       $ sudo apt-get install nfs-kernel-server
+#
+# Example:
+#
+# nfs:
+#    /home/meg/cinder: /cinder
+#    /home/meg/foo: /foo
+
+
+# Horizon port
+# ------------
+# The box runs in a NAT in the 192.168.x.x network, so a remote browser cannot connect
+# to horizon within the VM.  If you want to open a port on the host that maps to the
+# horizon port (80) in the VM, use the following:
+#
+# horizon_port: 8080
+# With this configuration, you can browse to horizon on the VM with http://HOST:8080 .
+# Of course you cannot have two vagrants running that use the same host port.
+
+
+# Devstack branch
+# --------------
+# If you want to change which devstack branch to checkout, use the
+# devstack_branch config option.  On boxes built with packer (which has all
+# depenencies already downloaded), this may even be problematic if checking out
+# an older branch, since it may use versions of dependencies that are newer and
+# incompatible with the older devstack branch.
+#
+# devstack_branch: myhack
+
+
+# X11 Forwarding
+# --------------
+# If you plan to use any GUI program like a browser or gitk, you will need to
+# enable forward X11 connections back to the host.  Otherwise the default of 'false' is normally
+# correct.
+# forward_x11: true
+
+
+# SSH Agent Forwarding
+# --------------------
+# If you use an ssh agent instead of copying your private ssh key around, you can
+# enable the VM to also use the agent with this setting:
+#
+# use_ssh_agent: true
+
+
+# Additional linux distribution packages (.deb packages)
+# -------------------
+# You can specificy additional packages to install via 'apt-get install' in the running VM.
+# For example:
+#
+# extra_packages: bc mailx
+
+# Additional python packages (from pypi)
+# -------------------
+# You can specificy additional packages to install via 'pip install' in the running VM.
+# For example:
+#
+# python_packages: flake8 rstcheck
+
+# Additional ruby gems
+# -------------------
+# You can specificy additional packages to install via 'gem install' in the running VM.
+# For example:
+#
+# ruby_gems: gist
+#
+# Information about how to use gist is here: https://github.com/defunkt/gist
+
+# Powerline
+# ---------
+# The Powerline plugin is popular with some developers in order to create a prettier
+# prompt line in bash and vim.  Use the following to install it in the VM:
+#
+# install_powerline: false
+#
+# More documentation on powerline is available at:
+# http://powerline.readthedocs.org/en/latest/index.html
+
+
+# Bypass devstack
+# ---------------
+# Sometimes you might want to start the VM without actually starting devstack, especially
+# if you are experimenting with settings or VM provisioning.  In order to skip starting
+# devstack, use this setting:
+#
+# bypass_devstack: true
+
+# Manila
+# ------
+# Manila has been partially integrated into devstack, but the horizon portion has not been.
+# The local.conf.manila can be used to include most of manila, but this option also
+# brings up manila's custom horizon version, running on port 8080 in the guest and which
+# will be available to the host on the horizon_port (see above)
+#
+# use_manila: true

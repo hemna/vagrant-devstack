@@ -1,0 +1,85 @@
+[[local|localrc]]
+
+DATABASE_PASSWORD=openstack
+RABBIT_PASSWORD=openstack
+SERVICE_PASSWORD=openstack
+ADMIN_PASSWORD=openstack
+SERVICE_TOKEN=a682f596-76f3-11e3-b3b2-e716f9080d50
+
+# where the stack.sh log goes
+LOGFILE=$TOP_DIR/logs/stack.sh.log
+
+# where the screen logfiles go
+SCREEN_LOGDIR=$DEST/logs/screen
+
+# Change the FLOATING_RANGE to whatever IPs VM is working in.
+# In NAT mode it is subnet VMWare Fusion provides, in bridged mode it is your local network.
+# But only use the top end of the network by using a /27 and starting at the 224 octet.
+
+# If in virtualbox host-only (private) network
+#   By default, virtualbox will hand out dhcp addresses in the entire 172.28.128.x subnet
+#   so use a different range that won't conflict
+HOST_IP=$(ip -o -4 addr show eth0 | sed 's#^.*inet \([0-9.]*\).*#\1#')
+#FLOATING_RANGE=172.28.127.0/24    # public IP addresses to assign to instances
+#FLAT_INTERFACE=eth1               # the NIC that connects the host to the network
+
+#FIXED_RANGE=10.11.12.0/24         # private addresses to assign to instances
+#FIXED_NETWORK_SIZE=256
+
+##FIXED_RANGE=10.1.0.0/24
+#NETWORK_GATEWAY=10.1.0.1
+
+#PUBLIC_NETWORK_GATEWAY=10.50.133.2
+
+# Nova VNC
+enable_service n-novnc
+
+# Swift
+enable_service s-proxy
+enable_service s-object
+enable_service s-container
+enable_service s-account
+enable_service c-bak
+SWIFT_HASH=66a3d6b56c1f479c8b4e70ab5c2000f5
+SWIFT_REPLICAS=1
+SWIFT_DATA_DIR=$DEST/data/swift
+
+# Neutron
+disable_service n-net
+enable_service q-svc
+enable_service q-agt
+enable_service q-dhcp
+enable_service q-13
+enable_service q-meta
+enable_service q-metering
+enable_service neutron
+enable_service q-lbaas
+enable_service q-fwaas
+
+# Heat
+enable_service heat
+enable_service h-api
+enable_service h-api-cfn
+enable_service h-api-cw
+enable_service h-eng
+
+# Sahara
+enable_service sahara
+
+# Trove
+enable_service trove tr-api tr-tmgr tr-cond
+# Ceilometer
+enable_service ceilometer-acompute
+enable_service ceilometer-acentral
+enable_service ceilometer-anotification
+enable_service ceilometer-collector
+enable_service ceilometer-api
+
+# Set ``OFFLINE`` to ``True`` to configure ``stack.sh`` to run cleanly without
+# Internet access. ``stack.sh`` must have been previously run with Internet
+# access to install prerequisites and fetch repositories.
+# OFFLINE=True
+
+[[post-config|$GLANCE_API_CONF]]
+[DEFAULT]
+default_store=file

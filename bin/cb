@@ -1,0 +1,25 @@
+#!/bin/bash
+# This command creates a screen session in the background (to capture output)
+# then ssh's into the vagrant and launches chrome.  
+# The -X option forwards the X11 packets to your display.
+# 
+# This only works if you are running this from a linux desktop with an X11 root
+# display manager
+if [[ -z "$DISPLAY" ]] ; then
+   echo "No X11 DISPLAY found.  This requires an X11 to be running" >&2
+   exit 1
+fi
+
+# generate a unque hostname to avoid conflicts
+HOSTNAME=devstack_$RANDOM   
+
+# record the ssh config info in a temp file
+SSH_CONFIG=$(tempfile)
+
+# ask vagrant for the details to connect via ssh
+vagrant ssh-config --host $HOSTNAME> $SSH_CONFIG
+
+# connect there and run chromium-browser
+ssh -X -F $SSH_CONFIG $HOSTNAME chromium-browser
+
+rm $SSH_CONFIG
