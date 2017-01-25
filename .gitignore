@@ -5,3 +5,4 @@ local.conf
 # Ignore any customizations in files/home EXCEPT for .pip
 files/home/*
 !files/home/.pip
+!files/home/.config
