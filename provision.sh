@@ -54,6 +54,11 @@ if [[ $authkeys < 2 ]] ; then
     fi
 fi
 
+INSTALL_DOTFILES=$(/vagrant/shyaml get-value install_dotfiles True < /vagrant/config.yaml)
+if [[ $INSTALL_DOTFILES == 'True' ]]; then
+	sudo -iu vagrant /vagrant/files/bin/dotfiles-install.sh
+fi
+
 INSTALL_POWERLINE=$(/vagrant/shyaml get-value install_powerline False < /vagrant/config.yaml)
 if [[ $INSTALL_POWERLINE == 'True' ]] ; then
     echo "Installing Powerline"
