@@ -15,6 +15,8 @@ usermod -aG adm vagrant
 sed -i '/X11DisplayOffset/ {s/10$/100/}' /etc/ssh/sshd_config
 service ssh restart
 
+export DEBIAN_FRONTENT=noninteractive
+
 PACKAGES="git tig git-review cifs-utils pandoc"
 PACKAGES+=" $(/vagrant/shyaml get-value extra_packages < /vagrant/config.yaml)"
 
