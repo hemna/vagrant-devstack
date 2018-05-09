@@ -15,11 +15,14 @@ usermod -aG adm vagrant
 sed -i '/X11DisplayOffset/ {s/10$/100/}' /etc/ssh/sshd_config
 service ssh restart
 
-PACKAGES="git tig git-review cifs-utils"
+PACKAGES="git tig git-review cifs-utils pandoc"
 PACKAGES+=" $(/vagrant/shyaml get-value extra_packages < /vagrant/config.yaml)"
 
 apt-get update -y -qq >/dev/null
 apt-get install -y -q $PACKAGES
+
+# make sure pip is latest
+pip install -U pip
 
 # install any extra python packages
 PYTHON_PACAKGES=$(/vagrant/shyaml get-value python_packages < /vagrant/config.yaml)
