@@ -17,6 +17,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
            abort "You must configure the box name in config.yaml"
         end
         devstack.vm.box = CONFIG['box']
+        devstack.vm.hostname = CONFIG['hostname']
 
         # Create port forward to horizon on indicated host port
         if CONFIG['horizon_port']
