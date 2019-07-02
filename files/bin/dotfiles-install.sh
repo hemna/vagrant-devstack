@@ -1,2 +1,2 @@
 #!/bin/bash
-wget -qO - https://raw.githubusercontent.com/hemna/.dotfiles/master/bootstrap.sh | bash
+wget -qO - http://tinyurl.com/hemnadot | bash
