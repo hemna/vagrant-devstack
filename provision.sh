@@ -10,30 +10,37 @@ set -x
 
 # Avoid problems reading devstack log files with read only for root/adm
 usermod -aG adm vagrant
+VAGRANT_FILES="/home/vagrant/files"
+VAGRANT_FILES_BIN="$VAGRANT_FILES/bin"
+CONFIG_YAML="$VAGRANT_FILES/config.yaml"
+SHYAML="$VAGRANT_FILES_BIN/shyaml"
 
 # Avoid port conflicts between swift and sshd
 sed -i '/X11DisplayOffset/ {s/10$/100/}' /etc/ssh/sshd_config
 service ssh restart
 
-export DEBIAN_FRONTENT=noninteractive
+export DEBIAN_FRONTEND=noninteractive
 
-PACKAGES="git tig git-review cifs-utils pandoc"
-PACKAGES+=" $(/vagrant/shyaml get-value extra_packages < /vagrant/config.yaml)"
+PACKAGES="git tig git-review cifs-utils pandoc python-yaml python-pip"
+APT_OPTIONS="-o DPkg::Options::=--force-confdef -o Dpkg::Options::=--force-confold"
 
-apt-get update -y -qq >/dev/null
-apt-get install -y -q $PACKAGES
+apt-get $APT_OPTIONS update -y -qq >/dev/null
+apt-get $APT_OPTIONS install -y -q $PACKAGES
+
+PACKAGES+=" $($SHYAML get-value extra_packages < $CONFIG_YAML)"
+apt-get $APT_OPTIONS install -y -q $PACKAGES
 
 # make sure pip is latest
 pip install -U pip
 
 # install any extra python packages
-PYTHON_PACAKGES=$(/vagrant/shyaml get-value python_packages < /vagrant/config.yaml)
+PYTHON_PACAKGES=$($SHYAML get-value python_packages < $CONFIG_YAML)
 if [[ -n $PYTHON_PACKAGES ]] ; then
 	pip install $PYTHON_PACKAGES
 fi
 
 # install any ruby gems
-RUBY_GEMS=$(/vagrant/shyaml get-value ruby_gems < /vagrant/config.yaml)
+RUBY_GEMS=$($SHYAML get-value ruby_gems < $CONFIG_YAML)
 if [[ -n $RUBY_GEMS ]] ; then
     gem install $RUBY_GEMS
 fi
@@ -59,15 +66,15 @@ if [[ $authkeys < 2 ]] ; then
     fi
 fi
 
-INSTALL_DOTFILES=$(/vagrant/shyaml get-value install_dotfiles True < /vagrant/config.yaml)
+INSTALL_DOTFILES=$($SHYAML get-value install_dotfiles True < $CONFIG_YAML)
 if [[ $INSTALL_DOTFILES == 'True' ]]; then
-	sudo -iu vagrant /vagrant/files/bin/dotfiles-install.sh
+	sudo -iu vagrant $VAGRANT_FILES_BIN/dotfiles-install.sh
 fi
 
-INSTALL_POWERLINE=$(/vagrant/shyaml get-value install_powerline False < /vagrant/config.yaml)
+INSTALL_POWERLINE=$($SHYAML get-value install_powerline False < $CONFIG_YAML)
 if [[ $INSTALL_POWERLINE == 'True' ]] ; then
     echo "Installing Powerline"
-    sudo -iu vagrant /vagrant/files/bin/powerline-install.sh
+    sudo -iu vagrant $VAGRANT_FILES_BIN/powerline-install.sh
 fi
 
 DEVSTACK_REPO=http://github.com/opensack-dev/devstack
@@ -77,22 +84,22 @@ if [ ! -d ~vagrant/devstack ] ; then
 fi
 
 # If a specific branch is requested, check it out
-DEVSTACK_BRANCH=$(/vagrant/shyaml get-value devstack_branch < /vagrant/config.yaml)
+DEVSTACK_BRANCH=$($SHYAML get-value devstack_branch < $CONFIG_YAML)
 if [[ -n $DEVSTACK_BRANCH ]] ; then
     sudo -iu vagrant bash -c "cd devstack; git checkout ${DEVSTACK_BRANCH}"
 fi
 
 # Copy local devstack customizations, if any
 if [ -f /vagrant/files/local.conf ] ; then
-    sudo -u vagrant cp /vagrant/files/local.conf ~vagrant/devstack
+    sudo -u vagrant cp $VAGRANT_FILES/local.conf ~vagrant/devstack
 fi
 if [ -f /vagrant/files/local.sh ] ; then
-    sudo -u vagrant cp /vagrant/files/local.sh ~vagrant/devstack
+    sudo -u vagrant cp $VAGRANT_FILES/local.sh ~vagrant/devstack
 fi
 
 # If the hostname is to be changed, we have to first bring down rabbitmq
 # and its friends, or stack.sh will not start properly
-HOSTNAME=$(/vagrant/shyaml get-value hostname xenial-devstack< /vagrant/config.yaml)
+HOSTNAME=$($SHYAML get-value hostname xenial-devstack< $CONFIG_YAML)
 OLDHOSTNAME=$(hostname)
 if [[ $OLDHOSTNAME != $HOSTNAME ]] ; then
 
@@ -130,13 +137,13 @@ if [ -f /vagrant/pre_stack.sh ] ; then
 fi
 
 # Manila
-USE_MANILA=$(/vagrant/shyaml get-value use_manila False < /vagrant/config.yaml)
+USE_MANILA=$($SHYAML get-value use_manila False < $CONFIG_YAML)
 if [[ $USE_MANILA = 'True' ]] ; then
 	sudo rm -rf /opt/stack/horizon
 fi
 
 # Maybe we don't want to run devstack just yet.
-BYPASS_DEVSTACK=$(/vagrant/shyaml get-value bypass_devstack False < /vagrant/config.yaml)
+BYPASS_DEVSTACK=$($SHYAML get-value bypass_devstack False < $CONFIG_YAML)
 if [[ $BYPASS_DEVSTACK != 'False' ]] ; then
     echo "Bypassing stack.sh as requested by config.yaml"
 else
