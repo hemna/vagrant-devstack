@@ -49,7 +49,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             devstack.vm.provision "file", source: "~/.ssh/id_rsa.pub", destination: "/tmp/id_rsa.pub"
         end
 
-        devstack.vm.synced_folder ENV["PWD"]+"/files", "/home/vagrant/files", type: "rsync"
+        devstack.vm.synced_folder "files/", "/home/vagrant/files", type: "rsync"
         #devstack.vm.provision "file", source: ENV["PWD"]+"/files", destination: "/home/vagrant/files"
         devstack.vm.provision "file", source: ENV["PWD"]+"/shyaml", destination: "/home/vagrant/files/bin/shyaml"
         devstack.vm.provision "file", source: ENV["PWD"]+"/config.yaml", destination: "/home/vagrant/files/config.yaml"
