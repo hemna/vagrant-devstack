@@ -34,7 +34,7 @@ apt-get $APT_OPTIONS install -y -q $PACKAGES
 pip install -U pip
 
 # install any extra python packages
-PYTHON_PACAKGES=$($SHYAML get-value python_packages < $CONFIG_YAML)
+PYTHON_PACKAGES=$($SHYAML get-value python_packages < $CONFIG_YAML)
 if [[ -n $PYTHON_PACKAGES ]] ; then
 	pip install $PYTHON_PACKAGES
 fi
