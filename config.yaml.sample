@@ -163,3 +163,10 @@ hostname: trusty-devstack
 # will be available to the host on the horizon_port (see above)
 #
 # use_manila: true
+#
+
+# DOTFILES
+# --------
+# install the .dotfiles from http://github.com/hemna/.dotfiles
+#
+# install_dotfiles: True
