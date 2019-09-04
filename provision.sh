@@ -54,11 +54,11 @@ if [[ $authkeys < 2 ]] ; then
     fi
 fi
 
-INSTALL_POWERLINE=$(/vagrant/shyaml get-value install_powerline False < /vagrant/config.yaml)
-if [[ $INSTALL_POWERLINE == 'True' ]] ; then
-    echo "Installing Powerline"
-    sudo -iu vagrant /vagrant/files/bin/powerline-install.sh
-fi
+#INSTALL_POWERLINE=$(/vagrant/shyaml get-value install_powerline False < /vagrant/config.yaml)
+#if [[ $INSTALL_POWERLINE == 'True' ]] ; then
+#    echo "Installing Powerline"
+#    sudo -iu vagrant /vagrant/files/bin/powerline-install.sh
+#fi
 
 DEVSTACK_REPO=http://github.com/opensack-dev/devstack
 if [ ! -d ~vagrant/devstack ] ; then
