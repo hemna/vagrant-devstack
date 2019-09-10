@@ -20,7 +20,7 @@ source $VAGRANT_FILES/lib/core.sh
 echo "OS=$OS"
 echo "DIST=$DIST"
 
-PACKAGES="wget ansible git tig git-review cifs-utils pandoc python-yaml python-pip"
+PACKAGES="acl wget ansible git tig git-review cifs-utils pandoc python-yaml python-pip"
 
 if [ "$OS" == "linux" ]; then
     export DEBIAN_FRONTEND=noninteractive
