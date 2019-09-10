@@ -15,20 +15,35 @@ VAGRANT_FILES_BIN="$VAGRANT_FILES/bin"
 CONFIG_YAML="$VAGRANT_FILES/config.yaml"
 SHYAML="$VAGRANT_FILES_BIN/shyaml"
 
+source $VAGRANT_FILES/lib/core.sh
+
+echo "OS=$OS"
+echo "DIST=$DIST"
+
+PACKAGES="wget ansible git tig git-review cifs-utils pandoc python-yaml python-pip"
+
+if [ "$OS" == "linux" ]; then
+    export DEBIAN_FRONTEND=noninteractive
+	if [ "$DIST" == "ubuntu" ]; then
+        APT_OPTIONS="-o DPkg::Options::=--force-confdef -o Dpkg::Options::=--force-confold"
+        apt-get $APT_OPTIONS update -y -qq >/dev/null
+        apt-get $APT_OPTIONS install -y -q $PACKAGES
+        EXTRA_PACKAGES=" $($SHYAML get-value extra_packages < $CONFIG_YAML)"
+        apt-get $APT_OPTIONS install -y -q $EXTRA_PACKAGES
+	elif [ "$DIST" == "suse" ]; then
+		cmd="zypper in -y"
+		zypper -q refresh
+		zypper -n install $PACKAGES
+        EXTRA_PACKAGES+=" $($SHYAML get-value extra_packages < $CONFIG_YAML)"
+		zypper -n install $EXTRA_PACKAGES
+	fi
+fi
+
+export ANSIBLE_HOST_KEY_CHECKING=False
+
 # Avoid port conflicts between swift and sshd
 sed -i '/X11DisplayOffset/ {s/10$/100/}' /etc/ssh/sshd_config
 service ssh restart
-
-export DEBIAN_FRONTEND=noninteractive
-
-PACKAGES="wget ansible git tig git-review cifs-utils pandoc python-yaml python-pip"
-APT_OPTIONS="-o DPkg::Options::=--force-confdef -o Dpkg::Options::=--force-confold"
-
-apt-get $APT_OPTIONS update -y -qq >/dev/null
-apt-get $APT_OPTIONS install -y -q $PACKAGES
-
-PACKAGES+=" $($SHYAML get-value extra_packages < $CONFIG_YAML)"
-apt-get $APT_OPTIONS install -y -q $PACKAGES
 
 # make sure pip is latest
 pip install -U pip
