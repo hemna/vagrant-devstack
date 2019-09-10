@@ -21,7 +21,7 @@ service ssh restart
 
 export DEBIAN_FRONTEND=noninteractive
 
-PACKAGES="git tig git-review cifs-utils pandoc python-yaml python-pip"
+PACKAGES="wget ansible git tig git-review cifs-utils pandoc python-yaml python-pip"
 APT_OPTIONS="-o DPkg::Options::=--force-confdef -o Dpkg::Options::=--force-confold"
 
 apt-get $APT_OPTIONS update -y -qq >/dev/null
@@ -70,12 +70,6 @@ INSTALL_DOTFILES=$($SHYAML get-value install_dotfiles True < $CONFIG_YAML)
 if [[ $INSTALL_DOTFILES == 'True' ]]; then
 	sudo -iu vagrant $VAGRANT_FILES_BIN/dotfiles-install.sh
 fi
-
-#INSTALL_POWERLINE=$($SHYAML get-value install_powerline False < $CONFIG_YAML)
-#if [[ $INSTALL_POWERLINE == 'True' ]] ; then
-#    echo "Installing Powerline"
-#    sudo -iu vagrant $VAGRANT_FILES_BIN/powerline-install.sh
-#fi
 
 DEVSTACK_REPO=http://github.com/opensack-dev/devstack
 if [ ! -d ~vagrant/devstack ] ; then
