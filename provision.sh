@@ -86,7 +86,7 @@ if [[ $INSTALL_DOTFILES == 'True' ]]; then
 	sudo -iu vagrant $VAGRANT_FILES_BIN/dotfiles-install.sh
 fi
 
-DEVSTACK_REPO=http://github.com/opensack-dev/devstack
+DEVSTACK_REPO=http://github.com/openstack-dev/devstack
 if [ ! -d ~vagrant/devstack ] ; then
     # Clone devstack
     sudo -iu vagrant git clone ${DEVSTACK_REPO}
