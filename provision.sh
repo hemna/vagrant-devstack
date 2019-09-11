@@ -29,13 +29,17 @@ if [ "$OS" == "linux" ]; then
         apt-get $APT_OPTIONS update -y -qq >/dev/null
         apt-get $APT_OPTIONS install -y -q $PACKAGES
         EXTRA_PACKAGES=" $($SHYAML get-value extra_packages < $CONFIG_YAML)"
-        apt-get $APT_OPTIONS install -y -q $EXTRA_PACKAGES
+		if [ ! -z "$EXTRA_PACKAGES" ]; then
+            apt-get $APT_OPTIONS install -y -q $EXTRA_PACKAGES
+	    fi
 	elif [ "$DIST" == "suse" ]; then
 		cmd="zypper in -y"
 		zypper -q refresh
 		zypper -n install $PACKAGES
         EXTRA_PACKAGES+=" $($SHYAML get-value extra_packages < $CONFIG_YAML)"
-		zypper -n install $EXTRA_PACKAGES
+		if [ ! -z "$EXTRA_PACKAGES" ]; then
+		    zypper -n install $EXTRA_PACKAGES
+		fi
 	fi
 fi
 
